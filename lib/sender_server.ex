@@ -13,12 +13,7 @@ defmodule SendServer do
   end
 
   def handle_cast({:send, email}, state) do
-    status =
-      case Sender.send_email(email) do
-        {:ok, "email_sent"} -> "sent"
-        :error -> "failed"
-      end
-
+    status = Sender.send_email(email)
     emails = [%{email: email, status: status, retries: 0} | state.emails]
     {:noreply, %{state | emails: emails}}
   end
@@ -26,14 +21,9 @@ defmodule SendServer do
   def handle_info(:retry, state = %{emails: emails, max_retries: max_retries}) do
     updated_emails =
       Enum.map(emails, fn
-        failed = %{status: "failed", retries: retries, email: email} when retries < max_retries ->
+        failed = %{status: :error, retries: retries, email: email} when retries < max_retries ->
           IO.puts("Retrying email #{email}...")
-
-          new_status =
-            case Sender.send_email(email) do
-              {:ok, "email_sent"} -> "sent"
-              :error -> "failed"
-            end
+          new_status = Sender.send_email(email)
 
           %{failed | retries: retries + 1, status: new_status}
 
