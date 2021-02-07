@@ -1,4 +1,4 @@
-defmodule Sender do
+defmodule Sender.Sender do
   def send_email(_email = "konnichiwa@world.com") do
     :error
   end

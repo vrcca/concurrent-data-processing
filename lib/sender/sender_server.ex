@@ -1,5 +1,6 @@
-defmodule SendServer do
+defmodule Sender.SendServer do
   use GenServer
+  alias Sender.Sender
 
   def init(args) do
     max_retries = Keyword.get(args, :max_retries, 5)
