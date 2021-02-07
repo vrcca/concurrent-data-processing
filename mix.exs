@@ -1,4 +1,4 @@
-defmodule Sender.MixProject do
+defmodule Cdp.MixProject do
   use Mix.Project
 
   def project do
@@ -15,7 +15,7 @@ defmodule Sender.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Sender.Application, []}
+      mod: {Cdp.Application, []}
     ]
   end
 
