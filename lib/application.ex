@@ -10,7 +10,7 @@ defmodule Cdp.Application do
     job_runner_config = [
       strategy: :one_for_one,
       name: Jobber.JobRunner,
-      max_seconds: 30_000
+      max_seconds: 30
     ]
 
     children = [
