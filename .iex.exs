@@ -5,6 +5,14 @@ emails = [
   "konnichiwa@world.com",
 ]
 
+pages = [
+  "google.com",
+  "facebook.com",
+  "apple.com",
+  "netflix.com",
+  "amazon.com"
+]
+
 good_job = fn ->
   Process.sleep(5_000)
   {:ok, []}

@@ -9,7 +9,8 @@ defmodule Cdp.Application do
   def start(_type, _args) do
     children = [
       Sender.Application,
-      Jobber.Application
+      Jobber.Application,
+      Scraper.Application
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
