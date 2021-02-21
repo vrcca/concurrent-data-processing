@@ -7,16 +7,9 @@ defmodule Cdp.Application do
 
   @impl true
   def start(_type, _args) do
-    job_runner_config = [
-      strategy: :one_for_one,
-      name: Jobber.JobRunner,
-      max_seconds: 30
-    ]
-
     children = [
-      {Task.Supervisor, name: Sender.EmailTaskSupervisor},
-      {DynamicSupervisor, job_runner_config},
-      {Registry, keys: :unique, name: Jobber.JobRegistry}
+      Sender.Application,
+      Jobber.Application
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

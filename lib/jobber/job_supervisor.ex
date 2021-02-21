@@ -5,6 +5,7 @@ defmodule Jobber.JobSupervisor do
     Supervisor.start_link(__MODULE__, args)
   end
 
+  @impl Supervisor
   def init(args) do
     children = [
       {Jobber.Job, args}
