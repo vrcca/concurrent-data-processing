@@ -1,5 +1,7 @@
 defmodule Scraper.Application do
   use Supervisor
+  alias Scraper.PageProducer
+  alias Scraper.PageConsumer
 
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args)
@@ -8,8 +10,9 @@ defmodule Scraper.Application do
   @impl Supervisor
   def init(_args) do
     children = [
-      Scraper.PageProducer,
-      Scraper.PageConsumer
+      PageProducer,
+      Supervisor.child_spec(PageConsumer, id: :consumer_a),
+      Supervisor.child_spec(PageConsumer, id: :consumer_b)
     ]
 
     opts = [strategy: :one_for_one]

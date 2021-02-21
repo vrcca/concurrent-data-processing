@@ -9,7 +9,7 @@ defmodule Scraper.PageConsumer do
 
   def init(initial_state) do
     Logger.info("PageConsumer init")
-    producers = [{Scraper.PageProducer, min_demand: 0, max_demand: 3}]
+    producers = [{Scraper.PageProducer, min_demand: 0, max_demand: 1}]
     {:consumer, initial_state, subscribe_to: producers}
   end
 
