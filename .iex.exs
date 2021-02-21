@@ -10,6 +10,11 @@ good_job = fn ->
   {:ok, []}
 end
 
+import_job = fn ->
+  Process.sleep(60_000)
+  {:ok, []}
+end
+
 bad_job = fn ->
   Process.sleep(5_000)
   :error

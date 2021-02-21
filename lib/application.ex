@@ -15,7 +15,8 @@ defmodule Cdp.Application do
 
     children = [
       {Task.Supervisor, name: Sender.EmailTaskSupervisor},
-      {DynamicSupervisor, job_runner_config}
+      {DynamicSupervisor, job_runner_config},
+      {Registry, keys: :unique, name: Jobber.JobRegistry}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
