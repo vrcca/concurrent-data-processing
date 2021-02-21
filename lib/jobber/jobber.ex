@@ -3,7 +3,13 @@ defmodule Jobber do
   alias Jobber.JobSupervisor
 
   def start_job(args) do
-    DynamicSupervisor.start_child(JobRunner, {JobSupervisor, args})
+    type = Keyword.get(args, :type)
+
+    if type == "import" and Enum.count(running_imports()) >= 5 do
+      {:error, :import_quota_reached}
+    else
+      DynamicSupervisor.start_child(JobRunner, {JobSupervisor, args})
+    end
   end
 
   def running_imports() do
