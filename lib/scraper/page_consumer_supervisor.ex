@@ -15,7 +15,11 @@ defmodule Scraper.PageConsumerSupervisor do
       %{id: PageConsumer, start: {PageConsumer, :start_link, []}, restart: :transient}
     ]
 
-    producers = [{OnlinePageProducerConsumer, max_demand: 2}]
+    producers = [
+      {OnlinePageProducerConsumer.via("online_page_producer_consumer_1"), []},
+      {OnlinePageProducerConsumer.via("online_page_producer_consumer_2"), []}
+    ]
+
     opts = [strategy: :one_for_one, subscribe_to: producers]
 
     ConsumerSupervisor.init(children, opts)

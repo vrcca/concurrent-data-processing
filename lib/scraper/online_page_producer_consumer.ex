@@ -8,7 +8,7 @@ defmodule Scraper.OnlinePageProducerConsumer do
     GenStage.start_link(__MODULE__, initial_state, name: via(id))
   end
 
-  defp via(id), do: {:via, Registry, {ProducerConsumerRegistry, id}}
+  def via(id), do: {:via, Registry, {ProducerConsumerRegistry, id}}
 
   def init(initial_state) do
     Logger.info("OnlinePageProducerConsumer init")

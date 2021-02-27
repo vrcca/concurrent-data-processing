@@ -24,6 +24,6 @@ defmodule Scraper.Application do
 
   defp producer_consumer_spec(id: id) do
     id = "online_page_producer_consumer_#{id}"
-    Supervisor.child_spec({OnlinePageProducerConsumer, [id]}, id: id)
+    Supervisor.child_spec({OnlinePageProducerConsumer, id}, id: id)
   end
 end
