@@ -3,7 +3,7 @@ defmodule Cdp.MixProject do
 
   def project do
     [
-      app: :sender,
+      app: :cdp,
       version: "0.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
@@ -22,7 +22,9 @@ defmodule Cdp.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:gen_stage, "~> 1.0"}
+      {:gen_stage, "~> 1.0"},
+      {:flow, "~> 1.0"},
+      {:nimble_csv, "~> 1.1"}
     ]
   end
 end

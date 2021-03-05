@@ -10,7 +10,8 @@ defmodule Cdp.Application do
     children = [
       Sender.Application,
       Jobber.Application,
-      Scraper.Application
+      Scraper.Application,
+      Airports.Application
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
