@@ -8,18 +8,19 @@ defmodule Airports.Airports do
   def open_airports() do
     airports_csv()
     |> File.stream!()
-    |> CSV.parse_stream()
-    |> Stream.map(fn row ->
-      # :binary.copy is required if you want to keep the data from CSV
-      # because row is just a reference to the file (which is good for performance)
+    |> Flow.from_enumerable()
+    |> Flow.map(fn row ->
+      # skip_headers because reads line by line now
+      [row] = CSV.parse_string(row, skip_headers: false)
+
       %{
-        id: :binary.copy(Enum.at(row, 0)),
-        type: :binary.copy(Enum.at(row, 2)),
-        name: :binary.copy(Enum.at(row, 3)),
-        country: :binary.copy(Enum.at(row, 8))
+        id: Enum.at(row, 0),
+        type: Enum.at(row, 2),
+        name: Enum.at(row, 3),
+        country: Enum.at(row, 8)
       }
     end)
-    |> Stream.reject(&(&1.type == "closed"))
+    |> Flow.reject(&(&1.type == "closed"))
     |> Enum.to_list()
   end
 end
