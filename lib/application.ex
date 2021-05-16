@@ -11,7 +11,8 @@ defmodule Cdp.Application do
       Sender.Application,
       Jobber.Application,
       Scraper.Application,
-      Airports.Application
+      Airports.Application,
+      Tickets.Application
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

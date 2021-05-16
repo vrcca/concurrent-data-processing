@@ -14,7 +14,7 @@ defmodule Cdp.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger, :crypto],
+      extra_applications: [:lager, :logger, :crypto],
       mod: {Cdp.Application, []}
     ]
   end
@@ -24,7 +24,9 @@ defmodule Cdp.MixProject do
     [
       {:gen_stage, "~> 1.0"},
       {:flow, "~> 1.0"},
-      {:nimble_csv, "~> 1.1"}
+      {:nimble_csv, "~> 1.1"},
+      {:broadway, "~> 0.6"},
+      {:broadway_rabbitmq, "~> 0.6"}
     ]
   end
 end
