@@ -27,3 +27,5 @@ sender-*.tar
 /tmp
 
 .DS_Store
+
+/log

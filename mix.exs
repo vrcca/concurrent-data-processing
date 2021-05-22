@@ -26,7 +26,8 @@ defmodule Cdp.MixProject do
       {:flow, "~> 1.0"},
       {:nimble_csv, "~> 1.1"},
       {:broadway, "~> 0.6"},
-      {:broadway_rabbitmq, "~> 0.6"}
+      {:broadway_rabbitmq, "~> 0.6"},
+      {:amqp, "~> 1.6"}
     ]
   end
 end

@@ -4,6 +4,7 @@ defmodule Tickets.BookingsPipeline do
 
   alias Tickets.Tickets
 
+  # Run `docker-compose -up -d` before testing this file
   @producer BroadwayRabbitMQ.Producer
   @producer_config [
     queue: "bookings_queue",
@@ -16,6 +17,11 @@ defmodule Tickets.BookingsPipeline do
       name: __MODULE__,
       producer: [module: {@producer, @producer_config}],
       processors: [
+        default: []
+      ],
+      batchers: [
+        cinema: [],
+        musical: [],
         default: []
       ]
     ]
@@ -43,20 +49,39 @@ defmodule Tickets.BookingsPipeline do
   end
 
   def handle_message(_processor, message, _context) do
-    %{data: %{event: event, user: user}} = message
+    %{data: %{event: event}} = message
 
     if Tickets.tickets_available?(event) do
-      Tickets.create_ticket(user, event)
-      Tickets.send_email(user)
-      Logger.info(message: "Created ticket!", event: message)
-      message
+      case event do
+        "cinema" ->
+          Broadway.Message.put_batcher(message, :cinema)
+
+        "musical" ->
+          Broadway.Message.put_batcher(message, :musical)
+
+        _other ->
+          message
+      end
     else
       Broadway.Message.failed(message, "bookings-closed")
     end
   end
 
+  def handle_batch(_batcher, messages, batch_info, _context) do
+    log("Batches!", batch_key: batch_info.batch_key, batcher: batch_info.batcher)
+
+    messages
+    |> Tickets.insert_all_tickets()
+    |> tap(fn messages ->
+      messages
+      |> Enum.map(fn %{data: %{user: user}} -> user end)
+      |> Enum.uniq()
+      |> Enum.each(&Tickets.send_email/1)
+    end)
+  end
+
   def handle_failed(messages, _context) do
-    Logger.info(message: "Failed messages", events: messages)
+    log("Failed messages", events: messages)
 
     Enum.map(messages, fn
       %{status: {:failed, "bookings-closed"}} = message ->
@@ -65,5 +90,9 @@ defmodule Tickets.BookingsPipeline do
       message ->
         message
     end)
+  end
+
+  def log(message, data \\ []) do
+    Logger.info([process: self(), message: message] ++ data)
   end
 end
