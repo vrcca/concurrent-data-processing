@@ -9,7 +9,8 @@ defmodule Tickets.BookingsPipeline do
   @producer_config [
     queue: "bookings_queue",
     declare: [durable: true],
-    on_failure: :reject_and_requeue
+    on_failure: :reject_and_requeue,
+    qos: [prefetch_count: 100]
   ]
 
   def start_link(_args) do
@@ -20,9 +21,10 @@ defmodule Tickets.BookingsPipeline do
         default: []
       ],
       batchers: [
-        cinema: [],
+        cinema: [batch_size: 75],
+        # defaults to batch_size 100. See `qos` above.
         musical: [],
-        default: []
+        default: [batch_size: 50]
       ]
     ]
 
@@ -72,12 +74,13 @@ defmodule Tickets.BookingsPipeline do
 
     messages
     |> Tickets.insert_all_tickets()
-    |> tap(fn messages ->
-      messages
-      |> Enum.map(fn %{data: %{user: user}} -> user end)
-      |> Enum.uniq()
-      |> Enum.each(&Tickets.send_email/1)
-    end)
+    |> tap(
+      &Enum.each(&1, fn message ->
+        channel = message.metadata.amqp_channel
+        payload = "email,#{message.data.user.email}"
+        AMQP.Basic.publish(channel, "", "notifications_queue", payload)
+      end)
+    )
   end
 
   def handle_failed(messages, _context) do

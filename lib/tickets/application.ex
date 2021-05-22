@@ -6,7 +6,11 @@ defmodule Tickets.Application do
   end
 
   def init(_args) do
-    children = [Tickets.BookingsPipeline]
+    children = [
+      Tickets.BookingsPipeline,
+      Tickets.NotificationsPipeline
+    ]
+
     opts = [strategy: :one_for_one, name: Tickets.Supervisor]
     Supervisor.init(children, opts)
   end

@@ -34,15 +34,14 @@ doomed_job = fn ->
 end
 
 send_messages = fn num_messages ->
-  AMQP.Connection.open()
-  |> then(fn {:ok, conn} -> AMQP.Channel.open(conn) end)
-  |> then(fn {:ok, channel} -> channel end)
-  |> tap(fn channel ->
-    Enum.each(1..num_messages, fn _ ->
+  with {:ok, conn} <- AMQP.Connection.open(),
+       {:ok, channel} <- AMQP.Channel.open(conn) do
+    Enum.each(1..num_messages//1, fn _ ->
       event = Enum.random(["cinema", "musical", "play"])
       user_id = Enum.random(1..3)
       AMQP.Basic.publish(channel, "", "bookings_queue", "#{event},#{user_id}")
     end)
-  end)
-  |> then(fn %{conn: conn} -> AMQP.Connection.close(conn) end)
+
+    AMQP.Connection.close(conn)
+  end
 end
